@@ -1,0 +1,46 @@
+Variables and Some Arithmetic
+def quadrado_da_hipotenusa(a, b):
+    return a**2 + b**2
+
+# Exemplo de uso:
+a = 830
+b = 849
+resultado = quadrado_da_hipotenusa(a, b)
+print(resultado)
+
+	Strings and Lists
+def fatiar_string(string, a, b, c, d):
+    # Retorna a fatia da string dos índices a até b e c até d
+    return string[a:b+1] + " " + string[c:d+1]
+# Exemplo de uso:
+entrada = "69mTLARPpgt332Faf6gLatastiaaAV9o3fN45Jzs8KdFqedd9viYKzOI9MgJeOtvXmpHonw1wI8p6h4Vh5Fed6TwFDnFZA9gtn2gtZBQkVVCmIX2IYN3Lj7OQ15acBLNQp7ZoemAiuEdVXopTfxTwfXY0Sseptentrionalis."
+a, b, c, d = 19, 26, 154, 168
+resultado = fatiar_string(entrada, a, b, c, d)
+print(resultado)
+
+Conditions and Loops
+def soma_impares(a, b):
+    soma = 0
+    for num in range(a, b + 1):
+        if num % 2 != 0:  # Verifica se o número é ímpar
+            soma += num
+    return soma
+
+# Exemplo de uso:
+a = 4509 
+b = 8992
+resultado = soma_impares(a, b)
+print(resultado)
+
+Working with Files
+def linhas_pares(arquivo_entrada, arquivo_saida):
+    with open(arquivo_entrada, 'r') as entrada, open(arquivo_saida, 'w') as saida:
+        for i, linha in enumerate(entrada, start=1):
+            if i % 2 == 0:  # Verifica se a linha é par
+                saida.write(linha)
+
+# Exemplo de uso:
+arquivo_entrada = "dados.txt"
+arquivo_saida = "linhas_pares.txt"
+linhas_pares(arquivo_entrada, arquivo_saida)
+
