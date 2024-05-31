@@ -5,6 +5,4 @@ Os scripts (script Lyuda) contém as funções criadas para gerar os dados do Tr
 
 O arquivo principal (main Lyuda) contém os principais pacotes, módulos e funções necessárias para a execução da linguagem Python e sua replicabilidade.
 
-A pasta Trabalho Final contém o arquivo em pdf do paper criado para a apresentação e aplicação do conteúdo teórico e prático da disciplina Python para Biocientistas.
-
-O material suplementar referente ao Trabalho Final, contendo a principal tabela (Tabela_Original) também está disponível neste repositório.
+A pasta Trabalho Final contém o arquivo em pdf do paper criado para a apresentação e aplicação do conteúdo teórico e prático da disciplina Python para Biocientistas, além do Script Lyuda, main Lyuda e Material Suplementar Lyuda.
