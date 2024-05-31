@@ -1,0 +1,276 @@
+    """
+    Script para apresentar as funções para resolver o trabalho final da disciplina de Python
+    """
+
+
+#questão 1 (gerar a tabela OTU):
+#primeiro passo criar uma função para gerar a tabela OTU:
+
+import numpy as np
+
+np.random.seed(2414) #crio a seed para iniciar a geração da tabela com números aleatórios
+
+
+#definindo os valores das células
+#para gerar os valores/célula/linha/coluna, total 100 linhas com no máximo 100.000 leituras/coluna, total 26 colunas:
+
+L = np.random.choice(range(0, 1950),  size= 100, replace= True) #range(0, 1950) para o máximo de 100.000 leituras/coluna
+
+L #é a variável que representa o código acima no numpy (no pandas será df)
+
+
+#definindo o shape (linhas, colunas) da minha tabela com 100 linhas e 26 colunas:
+
+(100,26)
+
+
+#criando a lista para nomear as colunas e as linhas:
+#criando a função para lista Alfabeto (nomear colunas)
+
+alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
+
+#criando a função para a lista de OTUs (nomear linhas)
+
+otu_list = ['OTU_{0}'.format(i) for i in range(1, 101)] #nomeando as linhas de 1 a 100
+
+
+#criando a função para gerar a tabela com linhas e colunas nomeadas:
+
+import pandas as pd
+
+df = pd.DataFrame(L, columns = alfabeto, index= otu_list)
+
+
+#questão 2 incluir zeros aleatórios entre 40-75% de cada coluna e somar até o máximo de 100.000 contagens:
+#criando a função para gerar zeros aleatórios e escolhi entre 40-70% de cada coluna
+#definindo a localização da célula para substituir o valor por zero
+
+for column in df.columns: #nessa função (loop) percorre cada coluna do Dataframe
+    zeros = np.random.choice(range(40, 70)) #criando a função para gerar zeros aleatórios e escolhi entre 40-70% de cada coluna
+    indexes = df.sample(zeros).index #seleciona aleatoriamente as linhas para pôr zero
+    for idx in indexes: #nessa função (loop) percorre cada linha do DataFrame
+        df.loc[idx, column] = 0 #localização de cada linha e cada coluna aleatória para substituir o valor por zero
+
+#renomeando a coluna adicionada como "OTU":
+
+df = df.reset_index().rename({'index': 'OTU'}, axis=1) #incluindo nova coluna e renomeando como "OTU"
+
+#criando função para salvar a tabela original:
+
+df.to_csv('tabela original.csv', sep='\t', header=True, index=None)
+
+
+
+#questão 3 Criar uma função para rarefar a tabela até o mínimo de contagens por amostra da tabela original:
+
+import numpy as np
+
+def rarefy_table(table, min_count):
+    """
+    Função para rarefação de uma tabela até o mínimo de contagens por amostra.
+    
+    Argumentos:
+    table: numpy array, uma tabela de contagens de leituras onde as linhas representam espécies e as colunas representam amostras.
+    min_count: int, o número mínimo de contagens permitido por amostra após a rarefação.
+    
+    Retorna:
+    numpy array, a tabela rarefeita.
+    """
+    # Verifica se o mínimo de contagens é válido
+    if min_count < 0:
+        raise ValueError("O número mínimo de contagens deve ser maior ou igual a zero.")
+    
+    # Calcula o número mínimo de contagens por amostra
+    min_counts_per_sample = np.minimum(np.sum(table, axis=0), min_count)
+    
+    # Inicializa a tabela rarefeita
+    rarefied_table = np.zeros_like(table)
+    
+    # Loop sobre cada amostra
+    for i in range(table.shape[0]):
+        # Se o número de contagens na amostra for menor ou igual ao mínimo, mantém todas as contagens
+        if np.sum(table[i, :]) <= min_count:
+            rarefied_table[i, :] = table[i, :]
+        else:
+            # Caso contrário, rarefaz a amostra
+            rarefied_table[i, :] = np.random.multinomial(min_counts_per_sample[i], table[i, :] / np.sum(table[i, :]))
+    
+    return rarefied_table
+
+
+#questão 4 Rarefar a tabela de OTUs e salvar ela como um arquivo tabulado:
+#tabela rarefeita e salvar como arquivo tabulado, então criar função para salvar tal arquivo
+
+import pandas as pd
+
+def save_table_as_tab(table, filename):
+    """
+    Salva a tabela como um arquivo tabulado.
+    
+    Argumentos:
+    table: numpy array, uma tabela de contagens de leituras onde as linhas representam espécies e as colunas representam amostras.
+    filename: str, o nome do arquivo para salvar a tabela.
+    """
+    df = pd.DataFrame(table)
+    df.to_csv(filename, sep='\t', index=False)
+
+# Salvar a tabela como um arquivo tabulado
+# O nome do arquivo é "tabela_rarefeita"
+save_table_as_tab(tabela_rarefeita, "tabela_rarefeita.tsv")
+
+#questão 5 criar uma função para normalizar a tabela de OTUs:
+
+import pandas as pd
+
+def normalize_table(table):
+    """
+    Normaliza uma tabela para que todos os valores estejam na faixa de 0 a 1.
+    
+    Argumentos:
+    table: pandas DataFrame, a tabela a ser normalizada.
+    
+    Retorna:
+    pandas DataFrame, a tabela normalizada.
+    """
+    # Normaliza cada coluna separadamente
+    normalized_table = (table - table.min()) / (table.max() - table.min())
+    
+    return normalized_table
+
+
+
+
+#questão 6.5 criar uma tabela com índices e sua média e desvio padrão
+
+
+import pandas as pd
+
+# Dados de exemplo (substitua pelos seus dados)
+data = {
+    'normalizado': [10, 20, 30, 40, 50],  # médias normalizadas
+    'rarefeito': [15, 25, 35, 45, 55],     # médias rarefeitas
+    'original': [20, 30, 40, 50, 60]       # médias originais
+}
+
+# Calcular médias e desvios padrão
+mean_counts = {key: sum(values) / len(values) for key, values in data.items()}
+std_counts = {key: (sum((x - mean_counts[key]) ** 2 for x in values) / len(values)) ** 0.5 for key, values in data.items()}
+
+# Criar DataFrame
+df = pd.DataFrame({'Média de contagens por amostra': mean_counts, 'Desvio padrão das médias': std_counts})
+
+# Mostrar DataFrame
+print(df)
+
+
+#criando um boxsplot (continuação questão 6.5)
+
+import matplotlib.pyplot as plt
+
+# Dados das médias para as abordagens rarefeito e normalizado
+# Substitua esses dados pelos seus próprios dados
+mean_counts_rarefeito = [20, 25, 30, 35, 40]
+mean_counts_normalizado = [25, 30, 35, 40, 45]
+
+# Boxplot das médias do tratamento rarefeito e normalizado
+plt.boxplot([mean_counts_rarefeito, mean_counts_normalizado], labels=['Rarefeito', 'Normalizado'])
+plt.xlabel('Tratamento')
+plt.ylabel('Média de contagens por amostra')
+plt.title('Boxplot das Médias do Tratamento Rarefeito e Normalizado')
+plt.show()
+
+#para salvar o boxplot gerado:
+
+# Salvar o gráfico como uma imagem PNG
+plt.savefig('boxplot.png')
+
+# Exibir o gráfico
+plt.show()
+
+#questão 7 criar uma função para a curva do coletor:
+
+import numpy as np
+
+def curva_do_coletor(n_amostras, max_especies=100):
+    """
+    Determina a curva do coletor até um número máximo de espécies.
+    
+    Argumentos:
+    n_amostras: int, o número de amostras a serem coletadas.
+    max_especies: int, o número máximo de espécies.
+    
+    Retorna:
+    list, uma lista com o número acumulado de espécies à medida que mais amostras são coletadas.
+    """
+    especies_observadas = set()  # Conjunto para armazenar espécies únicas
+    acumulado_especies = []       # Lista para armazenar o número acumulado de espécies
+    
+    for _ in range(n_amostras):
+        # Gera um número aleatório de espécies para a amostra atual
+        n_esp_amostra = np.random.randint(1, max_especies + 1)
+        
+        # Adiciona as novas espécies ao conjunto de espécies observadas
+        for i in range(n_esp_amostra):
+            especies_observadas.add(i + 1)
+        
+        # Calcula o número acumulado de espécies observadas até agora
+        acumulado_especies.append(len(especies_observadas))
+        
+    return acumulado_especies
+
+
+# Plotar a curva do coletor
+import matplotlib.pyplot as plt
+plt.plot(range(1, n_amostras + 1), curva)
+plt.xlabel('Número de amostras')
+plt.ylabel('Número acumulado de espécies')
+plt.title('Curva do Coletor')
+plt.grid(True)
+plt.show()
+
+#para salvar a curva gerada:
+
+# Salvar o gráfico como uma imagem PNG
+plt.savefig('curva do coletor.png')
+
+# Exibir o gráfico
+plt.show()
+
+
+
+#questão 9 criar uma função para o índice de Shannon:
+
+import numpy as np
+
+def indice_shannon(contagens):
+    """
+    Calcula o índice de Shannon para uma lista de contagens de espécies.
+    
+    Argumentos:
+    contagens: list, uma lista de contagens de espécies.
+    
+    Retorna:
+    float, o índice de Shannon calculado.
+    """
+    # Calcular proporções de cada espécie
+    proporcoes = np.array(contagens) / sum(contagens)
+    
+    # Remover proporções nulas
+    proporcoes = proporcoes[proporcoes > 0]
+    
+    # Calcular o índice de Shannon
+    indice = -sum(proporcoes * np.log(proporcoes))
+    
+    return indice
+
+
+
+
+
+
+
+
+
+
+
