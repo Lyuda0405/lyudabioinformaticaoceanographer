@@ -1,0 +1,44 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from #questão 1 (gerar a tabela OTU) import (
+                                            crio a seed
+                                            definindo os valores das células
+                                            criando a tabela com linhas e colunas nomeadas
+                                            )
+
+from #questão 2 (incluir zeros aleatórios) import (
+                                                   criando a função para zeros aleatórios
+                                                   função para salvar tabela original
+                                                   )
+
+from #questão 3 rarefar a tabela import função para rarefar a tabela
+from #questão 4 salvar a tabela rarefada import função para salvar a tabela em arquivo tabulado
+from #questão 5 normalizar a tabela import  função para normalizar a tabela
+from #questão 6.5 índices, média e desvio padrão import função média e desvio padrão e boxplot
+from #questão 7 curva do coletor import função curva do coletor
+from #questão 9 indice de shannon import função shannon
+
+def main():
+    
+    np.random.seed(2414)
+    #criando uma tabela vazia
+    tabela = criar_tabela_vazia(26, 100)
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    main()
+
+
+                                                  
